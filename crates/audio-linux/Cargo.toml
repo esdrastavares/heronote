@@ -1,0 +1,19 @@
+[package]
+name = "heronote-audio-linux"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Linux audio capture implementation for heronote"
+
+[dependencies]
+heronote-audio-core = { path = "../audio-core" }
+cpal.workspace = true
+tokio.workspace = true
+futures.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+serde.workspace = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+alsa = "0.9"
+libpulse-binding = "2.30"

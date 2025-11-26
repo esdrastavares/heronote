@@ -1,0 +1,11 @@
+[package]
+name = "heronote-audio-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Core traits and types for heronote audio capture"
+
+[dependencies]
+thiserror.workspace = true
+serde.workspace = true
+futures.workspace = true

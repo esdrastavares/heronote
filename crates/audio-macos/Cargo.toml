@@ -1,0 +1,17 @@
+[package]
+name = "heronote-audio-macos"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "macOS audio capture implementation for heronote"
+
+[dependencies]
+heronote-audio-core = { path = "../audio-core" }
+cpal.workspace = true
+ringbuf.workspace = true
+tokio.workspace = true
+futures.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+serde.workspace = true
+coreaudio-sys = "0.2"

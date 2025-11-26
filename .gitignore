@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Rust build
+target/
+
+# Build output
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Tauri
+apps/desktop/src-tauri/target/
+
+# Cache
+.turbo/
+.cache/
+
+# Test coverage
+coverage/
+
+# Lock files (optional - uncomment if you want to ignore)
+# pnpm-lock.yaml
+# Cargo.lock

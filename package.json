@@ -1,0 +1,14 @@
+{
+  "name": "heronote",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm -F desktop dev",
+    "build": "pnpm -F desktop build",
+    "tauri": "pnpm -F desktop tauri"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@9.14.2"
+}
