@@ -1,6 +1,7 @@
+mod conversion;
+mod device;
 mod mic;
 mod speaker;
-mod device;
 
 pub use heronote_audio_core::{AudioDevice, AudioError, DeviceType, AudioInput, AudioStream};
 pub use mic::{MicInput, MicStream};

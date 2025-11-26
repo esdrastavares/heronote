@@ -14,4 +14,6 @@ futures.workspace = true
 thiserror.workspace = true
 tracing.workspace = true
 serde.workspace = true
-coreaudio-sys = "0.2"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+cidre = { workspace = true, features = ["ca"] }

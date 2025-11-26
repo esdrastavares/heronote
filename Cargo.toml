@@ -19,6 +19,7 @@ futures = "0.3"
 # Audio
 cpal = "0.15"
 ringbuf = "0.4"
+cidre = "0.11"
 
 # Serialization
 serde = { version = "1", features = ["derive"] }

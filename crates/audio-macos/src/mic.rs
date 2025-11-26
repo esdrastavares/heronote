@@ -6,13 +6,9 @@ use cpal::{SampleFormat, Stream, StreamConfig, SupportedStreamConfig};
 use futures::Stream as FuturesStream;
 use tokio::sync::mpsc as tokio_mpsc;
 
+use crate::conversion::{convert_i16_slice_to_f32, convert_i32_slice_to_f32, convert_to_mono};
 use crate::device::{get_default_input_device, get_input_device_by_name};
 use heronote_audio_core::{AudioError, AudioInput, AudioStream};
-
-// Audio sample normalization constants
-// These are the maximum absolute values for each integer sample format
-const I16_MAX: f32 = 32768.0; // 2^15
-const I32_MAX: f32 = 2147483648.0; // 2^31
 
 /// Microphone input handler for macOS
 pub struct MicInput {
@@ -155,7 +151,7 @@ impl MicInput {
             .build_input_stream(
                 config,
                 move |data: &[i16], _: &cpal::InputCallbackInfo| {
-                    let float_data = convert_i16_to_f32(data);
+                    let float_data = convert_i16_slice_to_f32(data);
                     let mono = convert_to_mono(&float_data, channels);
                     send_samples(&tx, mono);
                 },
@@ -180,7 +176,7 @@ impl MicInput {
             .build_input_stream(
                 config,
                 move |data: &[i32], _: &cpal::InputCallbackInfo| {
-                    let float_data = convert_i32_to_f32(data);
+                    let float_data = convert_i32_slice_to_f32(data);
                     let mono = convert_to_mono(&float_data, channels);
                     send_samples(&tx, mono);
                 },
@@ -189,31 +185,6 @@ impl MicInput {
             )
             .map_err(|e| AudioError::StreamBuildError(e.to_string()))
     }
-}
-
-// ============================================================================
-// Audio conversion utilities
-// ============================================================================
-
-/// Convert I16 samples to F32 (-1.0 to 1.0 range)
-fn convert_i16_to_f32(data: &[i16]) -> Vec<f32> {
-    data.iter().map(|&s| s as f32 / I16_MAX).collect()
-}
-
-/// Convert I32 samples to F32 (-1.0 to 1.0 range)
-fn convert_i32_to_f32(data: &[i32]) -> Vec<f32> {
-    data.iter().map(|&s| s as f32 / I32_MAX).collect()
-}
-
-/// Convert multi-channel audio to mono by averaging channels
-fn convert_to_mono(data: &[f32], channels: usize) -> Vec<f32> {
-    if channels == 1 {
-        return data.to_vec();
-    }
-
-    data.chunks(channels)
-        .map(|frame| frame.iter().sum::<f32>() / channels as f32)
-        .collect()
 }
 
 /// Send audio samples through the channel with proper error logging
