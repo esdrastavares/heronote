@@ -25,10 +25,11 @@ use heronote_audio_core::{AudioError, AudioInput, AudioStream};
 const TAP_DEVICE_NAME: &str = "Heronote Audio Tap";
 
 /// Number of samples per read chunk from the ring buffer
-const SAMPLES_PER_CHUNK: usize = 256;
+const SAMPLES_PER_CHUNK: usize = 1024;
 
 /// Ring buffer capacity multiplier to prevent overflow during async delays
-const BUFFER_CAPACITY_MULTIPLIER: usize = 4;
+/// At 48kHz, this gives ~1.3 seconds of buffer (65536 samples)
+const BUFFER_CAPACITY_MULTIPLIER: usize = 64;
 
 /// Default sample rate when device sample rate cannot be determined
 const DEFAULT_SAMPLE_RATE: u32 = 48000;
@@ -185,30 +186,31 @@ impl SpeakerInput {
             {
                 if let Some(data) = view.data_f32_at(0) {
                     process_audio_data(ctx, data);
-                }
-            } else {
-                // Fallback to manual buffer processing
-                let first_buffer = &input_data.buffers[0];
-
-                if first_buffer.data_bytes_size == 0 || first_buffer.data.is_null() {
                     return os::Status::NO_ERR;
                 }
+            }
 
-                match ctx.format.common_format() {
-                    av::audio::CommonFormat::PcmF32 => {
-                        process_samples(ctx, first_buffer, |sample: f32| sample);
-                    }
-                    av::audio::CommonFormat::PcmF64 => {
-                        process_samples(ctx, first_buffer, f64_to_f32);
-                    }
-                    av::audio::CommonFormat::PcmI32 => {
-                        process_samples(ctx, first_buffer, i32_to_f32);
-                    }
-                    av::audio::CommonFormat::PcmI16 => {
-                        process_samples(ctx, first_buffer, i16_to_f32);
-                    }
-                    _ => {}
+            // Fallback to manual buffer processing
+            let first_buffer = &input_data.buffers[0];
+
+            if first_buffer.data_bytes_size == 0 || first_buffer.data.is_null() {
+                return os::Status::NO_ERR;
+            }
+
+            match ctx.format.common_format() {
+                av::audio::CommonFormat::PcmF32 => {
+                    process_samples(ctx, first_buffer, |sample: f32| sample);
                 }
+                av::audio::CommonFormat::PcmF64 => {
+                    process_samples(ctx, first_buffer, f64_to_f32);
+                }
+                av::audio::CommonFormat::PcmI32 => {
+                    process_samples(ctx, first_buffer, i32_to_f32);
+                }
+                av::audio::CommonFormat::PcmI16 => {
+                    process_samples(ctx, first_buffer, i16_to_f32);
+                }
+                _ => {}
             }
 
             os::Status::NO_ERR

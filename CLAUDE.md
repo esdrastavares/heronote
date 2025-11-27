@@ -1,3 +1,3 @@
-- SEMPRE utilize o projeto https://github.com/fastrepl/hyprnote como referencia
+- SEMPRE utilize o projeto https://github.com/fastrepl/hyprnote que esta na pasta ref/hyprnote como referencia
 - UTILIZE tauri 2.0
 - SEMPRE retorne os código com clean code e solid

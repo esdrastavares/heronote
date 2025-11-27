@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { DebugPanel } from "./components/DebugPanel";
 
 interface AudioDevice {
   name: string;
@@ -11,7 +12,6 @@ function App() {
   const [devices, setDevices] = useState<AudioDevice[]>([]);
   const [isMicCapturing, setIsMicCapturing] = useState(false);
   const [isSpeakerCapturing, setIsSpeakerCapturing] = useState(false);
-  const [micLevel, setMicLevel] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -206,6 +206,9 @@ function App() {
           Refresh Devices
         </button>
       </section>
+
+      {/* Debug Panel - only visible in development builds */}
+      <DebugPanel />
     </div>
   );
 }
